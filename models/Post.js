@@ -47,6 +47,52 @@ const searchPosts = async (query) => {
   return result.rows;
 }
 
+const filterPosts = async ({ author, startDate, endDate, sortByRecent, page, limit }) => {
+  let query = 'SELECT * FROM posts WHERE 1=1';
+  const params = [];
+
+  if (author) {
+    params.push(author);
+    query += ` AND author = $${params.length}`;
+  }
+
+  if (startDate) {
+    params.push(startDate);
+    query += ` AND date >= $${params.length}`;
+  }
+
+  if (endDate) {
+    params.push(endDate);
+    query += ` AND date <= $${params.length}`;
+  }
+
+  if (sortByRecent === 'true') {
+    query += ' ORDER BY date DESC';
+  } else {
+    query += ' ORDER BY date ASC';
+  }
+
+  // Pagination
+  if (page && limit) {
+    const offset = (page - 1) * limit;
+    params.push(limit);
+    params.push(offset);
+    query += ` LIMIT $${params.length - 1} OFFSET $${params.length}`;
+  }
+
+  const result = await db.query(query, params);
+  return result.rows;
+};
+
+const getMostLikedPosts = async (page, limit) => {
+  const offset = (page - 1) * limit;
+  const result = await db.query(
+    'SELECT * FROM posts ORDER BY likes DESC LIMIT $1 OFFSET $2',
+    [limit, offset]
+  );
+  return result.rows;
+};
+
 module.exports = {
   createPost,
   getPosts,
@@ -54,5 +100,8 @@ module.exports = {
   updatePost,
   deletePost,
   incrementLikes,
-  searchPosts
+  searchPosts,
+  filterPosts,
+  getMostLikedPosts,
+
 };

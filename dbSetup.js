@@ -1,6 +1,4 @@
-
-
-// run node dbSetup.js
+// run node dbSetup-db
 
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
@@ -11,6 +9,11 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
+/**
+ * Creates the necessary tables in the database if they do not already exist.
+ * 
+ * @returns {void}
+ */
 const createTables = async () => {
   try {
     await pool.query(`
@@ -18,7 +21,9 @@ const createTables = async () => {
         id SERIAL PRIMARY KEY,
         email VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        reset_password_token VARCHAR(255),
+        reset_password_expire TIMESTAMP
       );
     `);
 

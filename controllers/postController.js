@@ -162,6 +162,27 @@ const searchPosts = async (req, res, next) => {
   }
 };
 
+const filterPosts = async (req, res, next) => {
+  try {
+    const { author, startDate, endDate, sortByRecent, page, limit } = req.query;
+    const filters = { author, startDate, endDate, sortByRecent, page, limit };
+    const posts = await Post.filterPosts(filters);
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getMostLikedPosts = async (req, res, next) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const posts = await Post.getMostLikedPosts(page, limit);
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createPost,
   getPosts,
@@ -172,5 +193,8 @@ module.exports = {
   createComment,
   getCommentsByPostId,
   deleteComment,
-  searchPosts
+  searchPosts,
+  filterPosts,
+  getMostLikedPosts,
+
 };
