@@ -47,7 +47,7 @@ const searchPosts = async (query) => {
   return result.rows;
 }
 
-const filterPosts = async ({ author, startDate, endDate, sortByRecent, page, limit }) => {
+const filterPosts = async ({ author, startDate, endDate, sortBy, page, limit }) => {
   let query = 'SELECT * FROM posts WHERE 1=1';
   const params = [];
 
@@ -66,8 +66,10 @@ const filterPosts = async ({ author, startDate, endDate, sortByRecent, page, lim
     query += ` AND date <= $${params.length}`;
   }
 
-  if (sortByRecent === 'true') {
+  if (sortBy === 'recent') {
     query += ' ORDER BY date DESC';
+  } else if (sortBy === 'likes') {
+    query += ' ORDER BY likes DESC';
   } else {
     query += ' ORDER BY date ASC';
   }
@@ -84,15 +86,6 @@ const filterPosts = async ({ author, startDate, endDate, sortByRecent, page, lim
   return result.rows;
 };
 
-const getMostLikedPosts = async (page, limit) => {
-  const offset = (page - 1) * limit;
-  const result = await db.query(
-    'SELECT * FROM posts ORDER BY likes DESC LIMIT $1 OFFSET $2',
-    [limit, offset]
-  );
-  return result.rows;
-};
-
 module.exports = {
   createPost,
   getPosts,
@@ -102,6 +95,4 @@ module.exports = {
   incrementLikes,
   searchPosts,
   filterPosts,
-  getMostLikedPosts,
-
 };

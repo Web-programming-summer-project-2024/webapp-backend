@@ -162,21 +162,15 @@ const searchPosts = async (req, res, next) => {
   }
 };
 
+/**
+ * This function filters posts based on the provided filters and sorting criteria.
+ * It handles author, date range, sorting by recent or likes, and pagination.
+ */
 const filterPosts = async (req, res, next) => {
   try {
-    const { author, startDate, endDate, sortByRecent, page, limit } = req.query;
-    const filters = { author, startDate, endDate, sortByRecent, page, limit };
+    const { author, startDate, endDate, sortBy, page, limit } = req.query;
+    const filters = { author, startDate, endDate, sortBy, page, limit };
     const posts = await Post.filterPosts(filters);
-    res.json(posts);
-  } catch (error) {
-    next(error);
-  }
-};
-
-const getMostLikedPosts = async (req, res, next) => {
-  try {
-    const { page = 1, limit = 10 } = req.query;
-    const posts = await Post.getMostLikedPosts(page, limit);
     res.json(posts);
   } catch (error) {
     next(error);
@@ -195,6 +189,4 @@ module.exports = {
   deleteComment,
   searchPosts,
   filterPosts,
-  getMostLikedPosts,
-
 };
