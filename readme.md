@@ -1,30 +1,4 @@
-the test of fitler by Author and Most Liked seems not correct. fix it 
 
-
-so basically all other filter endpoints containing sortByLikes. these failed and     be fixed 
-
-
-
-__
-_
-i get a validation error {
-    "message": "Validation error",
-    "errors": [
-        {
-            "type": "field",
-            "value": "2024-08-00",
-            "msg": "Invalid end date",
-            "path": "endDate",
-            "location": "query"
-        }
-    ]
-}
-
-
-it should be customed error exception
-
-
-________________________________________________
 
 # Social Media App Backend
 
